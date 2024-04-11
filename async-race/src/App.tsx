@@ -1,11 +1,10 @@
 import React from 'react';
+import Head from './components/Head.tsx';
 
 function App() {
   return (
-    <div>
-      <h1>
-        Hello, World!
-      </h1>
+    <div className="container mx-auto ">
+      <Head />
     </div>
   );
 }
