@@ -2,9 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background-color: #37123c;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
+body {
+  background-color: #37123c;
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes moveLeftToRight {
+  0% {
+    margin-left: 100px;
+}
+  100% {
+    margin-left: calc(100% - 100px);
+  }
+}
+
+.parent-container {
+  position: relative; /* Ensure relative positioning */
+  width: 100%; /* Set the desired width */
+  height: 200px; /* Set the desired height */
+}
+
+.animated-object {
+  animation-name: moveLeftToRight;
+  animation-duration: 10s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+  position: absolute; /* Position relative to the parent */
+  width: 100px;
+  height: 100px;
+  margin-left: 100px;
 }
