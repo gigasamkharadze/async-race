@@ -1,27 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // import components
 import Head from './components/Head.tsx';
 import Control from './components/Control.tsx';
 import Garage from './components/Garage.tsx';
 import Winners from './components/Winners.tsx';
+import { useGarage } from './context/CarContext.tsx';
 
 function App() {
   const [view, setView] = useState('garage');
-  const [garage, setGarage] = useState([]);
-  const [garagePage, setGaragePage] = useState(1);
-  const limit = 7;
-
-  useEffect(
-    () => {
-      fetch(`http://127.0.0.1:3000/garage?_page=${garagePage}&_limit=${limit}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setGarage(data);
-        });
-    },
-    [garagePage],
-  );
+  const { garage } = useGarage();
 
   return (
     <div className="container mx-auto ">

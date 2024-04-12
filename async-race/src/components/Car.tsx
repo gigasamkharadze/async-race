@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useGarage } from '../context/CarContext.tsx';
 
 interface CarProps {
   name: string;
@@ -8,6 +9,7 @@ interface CarProps {
 
 function Car({ name, color, id }: CarProps) {
   const [isAnimated, setIsAnimated] = useState(false);
+  const { refetchGarage } = useGarage();
 
   return (
     <div className="parent-container w-full flex gap-3 items-center">
@@ -22,7 +24,7 @@ function Car({ name, color, id }: CarProps) {
           onClick={() => {
             fetch(`http://127.0.0.1:3000/garage/${id}`, {
               method: 'DELETE',
-            });
+            }).then(() => refetchGarage());
           }}
           type="button"
           className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"

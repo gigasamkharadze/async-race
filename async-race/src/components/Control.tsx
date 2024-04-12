@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useGarage } from '../context/CarContext';
 
 const carBrands = [
   'Audi',
@@ -28,6 +29,21 @@ function Control() {
   const [carColorNew, setCarColorNew] = useState('');
   const [carBrandUpdate, setCarBrandUpdate] = useState('');
   const [carColorUpdate, setCarColorUpdate] = useState('');
+  const { refetchGarage } = useGarage();
+
+  function createCar() {
+    fetch('http://127.0.0.1:3000/garage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: carBrandNew,
+        color: carColorNew,
+      }),
+    })
+      .then(() => refetchGarage());
+  }
 
   return (
     <div className="flex justify-between items-center gap-4">
@@ -62,18 +78,7 @@ function Control() {
           type="color"
         />
         <button
-          onClick={() => {
-            fetch('http://127.0.0.1:3000/garage', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                name: carBrandNew,
-                color: carColorNew,
-              }),
-            });
-          }}
+          onClick={createCar}
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
           type="button"
         >
