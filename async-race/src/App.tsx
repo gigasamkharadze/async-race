@@ -9,9 +9,7 @@ import Winners from './components/Winners.tsx';
 function App() {
   const [view, setView] = useState('garage');
   const [garage, setGarage] = useState([]);
-  const [winners, setWinners] = useState([]);
   const [garagePage, setGaragePage] = useState(1);
-  const [winnersPage, setWinnersPage] = useState(1);
   const limit = 7;
 
   useEffect(
@@ -25,23 +23,12 @@ function App() {
     [garagePage],
   );
 
-  useEffect(
-    () => {
-      fetch(`http://127.0.0.1:3000/winners?_page=${winnersPage}&_limit=${limit}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setWinners(data);
-        });
-    },
-    [winnersPage],
-  );
-
   return (
     <div className="container mx-auto ">
       <Head
         setView={setView}
       />
-      <Control />
+      {view === 'garage' && <Control />}
       {
         view === 'garage'
           ? (
