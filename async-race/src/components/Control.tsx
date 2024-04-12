@@ -1,17 +1,13 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function Control() {
-
-  const [car_brand_new, setCarBrandNew] = useState('');
-  const [car_color_new, setCarColorNew] = useState('');
-  const [car_brand_update, setCarBrandUpdate] = useState('');
-  const [car_color_update, setCarColorUpdate] = useState('');
-
-  console.log(car_brand_new, car_color_new, car_brand_update, car_color_update);
+  const [carBrandNew, setCarBrandNew] = useState('');
+  const [carColorNew, setCarColorNew] = useState('');
+  const [carBrandUpdate, setCarBrandUpdate] = useState('');
+  const [carColorUpdate, setCarColorUpdate] = useState('');
 
   return (
-    <div className="flex justify-around items-center gap-4">
+    <div className="flex justify-between items-center gap-4">
       <div className="flex gap-2">
         <button
           type="button"
@@ -32,29 +28,28 @@ function Control() {
       <div className="flex gap-2 items-center">
         <input
           onChange={(e) => setCarBrandNew(e.target.value)}
-          value={car_brand_new}
+          value={carBrandNew}
           className="border-2 border-buff rounded-sm p-2"
           type="text"
           placeholder="TYPE CAR BRAND"
         />
-        <input 
-        onChange={(e) => setCarColorNew(e.target.value)}
-        value={car_color_new}
-        type="color" />
+        <input
+          onChange={(e) => setCarColorNew(e.target.value)}
+          value={carColorNew}
+          type="color"
+        />
         <button
           onClick={() => {
-            console.log('click');
             fetch('http://127.0.0.1:3000/garage', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                name: car_brand_new,
-                color: car_color_new,
+                name: carBrandNew,
+                color: carColorNew,
               }),
             });
-            
           }}
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
           type="button"
@@ -65,15 +60,16 @@ function Control() {
       <div className="flex gap-2 items-center">
         <input
           onChange={(e) => setCarBrandUpdate(e.target.value)}
-          value={car_brand_update}
+          value={carBrandUpdate}
           className="border-2 border-buff rounded-sm p-2"
           type="text"
           placeholder="TYPE CAR BRAND"
         />
-        <input 
-        onChange={(e) => setCarColorUpdate(e.target.value)}
-        value={car_color_update}
-        type="color" />
+        <input
+          onChange={(e) => setCarColorUpdate(e.target.value)}
+          value={carColorUpdate}
+          type="color"
+        />
         <button
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
           type="button"

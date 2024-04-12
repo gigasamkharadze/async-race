@@ -1,28 +1,29 @@
-import React from "react";
-import Car from "./Car";
+import React from 'react';
+import Car from './Car.tsx';
 
-interface Car {
+interface ICar {
   name: string;
   color: string;
   id: number;
 }
 
 interface Props {
-  garage: Car[];
+  garage: ICar[];
 }
 
-const Garage = ({ garage }: Props) => {
+function Garage({ garage }: Props) {
   return (
     <div className="garage">
-        {garage.map((car) => (
-            <Car 
-            key={car.id} 
-            name={car.name} 
-            color={car.color} 
-            id={car.id} />
-        ))}
+      {garage.map((car) => (
+        <Car
+          key={car.id}
+          name={car.name}
+          color={car.color}
+          id={car.id}
+        />
+      ))}
     </div>
   );
-};
+}
 
 export default Garage;

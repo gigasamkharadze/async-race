@@ -1,10 +1,10 @@
 import React from 'react';
 
 interface Props {
-  setView: React.Dispatch<React.SetStateAction<any>>;
+  setView: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Head = ({ setView }: Props) => {
+function Head({ setView }: Props) {
   return (
     <div className="container mx-auto">
       <div className="flex justify-center gap-4">

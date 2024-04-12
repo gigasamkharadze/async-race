@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 interface CarProps {
   name: string;
@@ -6,10 +6,8 @@ interface CarProps {
   id: number;
 }
 
-const Car = ({ name, color, id }: CarProps) => {
+function Car({ name, color, id }: CarProps) {
   const [isAnimated, setIsAnimated] = useState(false);
-
-  console.log(name, color, id);
 
   return (
     <div className="parent-container w-full flex gap-3 items-center">
@@ -23,7 +21,7 @@ const Car = ({ name, color, id }: CarProps) => {
         <button
           onClick={() => {
             fetch(`http://127.0.0.1:3000/garage/${id}`, {
-              method: "DELETE",
+              method: 'DELETE',
             });
           }}
           type="button"
@@ -54,11 +52,11 @@ const Car = ({ name, color, id }: CarProps) => {
       <img
         src="racing-car.png"
         alt="racing car"
-        className={`car ${isAnimated ? "animated-object" : ""}`}
+        className={`car ${isAnimated ? 'animated-object' : ''}`}
       />
       <p className="ml-48 text-white">{name}</p>
     </div>
   );
-};
+}
 
 export default Car;
