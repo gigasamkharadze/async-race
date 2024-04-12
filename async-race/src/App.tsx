@@ -9,6 +9,8 @@ function App() {
       <Head />
       <Control />
       <Car />
+      <Car />
+      <Car />
     </div>
   );
 }
