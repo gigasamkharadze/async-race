@@ -1,5 +1,28 @@
 import React, { useState } from 'react';
 
+const carBrands = [
+  'Audi',
+  'BMW',
+  'Chevrolet',
+  'Citroen',
+  'Ford',
+  'Honda',
+  'Hyundai',
+  'Kia',
+  'Mazda',
+  'Mercedes',
+  'Nissan',
+  'Opel',
+  'Peugeot',
+  'Renault',
+  'Skoda',
+  'Subaru',
+  'Suzuki',
+  'Toyota',
+  'Volkswagen',
+  'Volvo',
+];
+
 function Control() {
   const [carBrandNew, setCarBrandNew] = useState('');
   const [carColorNew, setCarColorNew] = useState('');
@@ -79,6 +102,22 @@ function Control() {
       </div>
       <div>
         <button
+          onClick={() => {
+            for (let i = 0; i < 5; i += 1) {
+              const randomCarBrand = carBrands[Math.floor(Math.random() * carBrands.length)];
+              const randomCarColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+              fetch('http://127.0.0.1:3000/garage', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  name: randomCarBrand,
+                  color: randomCarColor,
+                }),
+              });
+            }
+          }}
           type="button"
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
         >
