@@ -9,6 +9,8 @@ interface CarProps {
 const Car = ({ name, color, id }: CarProps) => {
   const [isAnimated, setIsAnimated] = useState(false);
 
+  console.log(name, color, id);
+
   return (
     <div className="parent-container w-full flex gap-3 items-center">
       <div className="flex flex-col text-white gap-1">
