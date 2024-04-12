@@ -9,20 +9,28 @@ import { useGarage } from './context/CarContext.tsx';
 
 function App() {
   const [view, setView] = useState('garage');
-  const { garage } = useGarage();
+  const { garage, goToNextPage, goToPrevPage } = useGarage();
+  const [selectedCar, setSelectedCar] = useState<number>(0);
 
   return (
     <div className="container mx-auto ">
       <Head
         setView={setView}
       />
-      {view === 'garage' && <Control />}
       {
         view === 'garage'
           ? (
-            <Garage
-              garage={garage}
-            />
+            <div>
+              <Control
+                selectedCar={selectedCar}
+              />
+              <Garage
+                garage={garage}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                setSelectedCar={setSelectedCar}
+              />
+            </div>
           )
           : <Winners />
       }

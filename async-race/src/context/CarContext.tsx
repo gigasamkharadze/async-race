@@ -52,7 +52,10 @@ export function GarageProvider({ children }: GarageProviderProps) {
     garage,
     setGarage,
     refetchGarage,
-    goToNextPage: () => setGaragePage((prevPage) => prevPage + 1),
+    goToNextPage: () => {
+      if (garage.length < limit) return;
+      setGaragePage((prevPage) => prevPage + 1);
+    },
     goToPrevPage: () => setGaragePage((prevPage) => Math.max(prevPage - 1, 1)),
   }), [garage, refetchGarage]);
 

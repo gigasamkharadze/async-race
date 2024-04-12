@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGarage } from '../context/CarContext';
+import { useGarage } from '../context/CarContext.tsx';
 
 const carBrands = [
   'Audi',
@@ -24,12 +24,32 @@ const carBrands = [
   'Volvo',
 ];
 
-function Control() {
+type ControlProps = {
+  selectedCar: number;
+};
+
+function Control({ selectedCar } : ControlProps) {
   const [carBrandNew, setCarBrandNew] = useState('');
-  const [carColorNew, setCarColorNew] = useState('');
+  const [carColorNew, setCarColorNew] = useState('#000000');
   const [carBrandUpdate, setCarBrandUpdate] = useState('');
-  const [carColorUpdate, setCarColorUpdate] = useState('');
-  const { refetchGarage } = useGarage();
+  const [carColorUpdate, setCarColorUpdate] = useState('#000000');
+  const { refetchGarage, garage } = useGarage();
+
+  function updateCar() {
+    if (selectedCar === 0) return;
+    if (!garage.some((car) => car.id === selectedCar)) return;
+    fetch(`http://127.0.0.1:3000/garage/${selectedCar}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: carBrandUpdate,
+        color: carColorUpdate,
+      }),
+    })
+      .then(() => refetchGarage());
+  }
 
   function createCar() {
     fetch('http://127.0.0.1:3000/garage', {
@@ -99,6 +119,7 @@ function Control() {
           type="color"
         />
         <button
+          onClick={updateCar}
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
           type="button"
         >
@@ -120,7 +141,7 @@ function Control() {
                   name: randomCarBrand,
                   color: randomCarColor,
                 }),
-              });
+              }).then(() => refetchGarage());
             }
           }}
           type="button"

@@ -5,16 +5,22 @@ interface CarProps {
   name: string;
   color: string;
   id: number;
+  setSelectedCar: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function Car({ name, color, id }: CarProps) {
+function Car({
+  name, color, id, setSelectedCar,
+}: CarProps) {
   const [isAnimated, setIsAnimated] = useState(false);
   const { refetchGarage } = useGarage();
+
+  console.log(name, color, id);
 
   return (
     <div className="parent-container w-full flex gap-3 items-center">
       <div className="flex flex-col text-white gap-1">
         <button
+          onClick={() => setSelectedCar(id)}
           type="button"
           className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
         >
