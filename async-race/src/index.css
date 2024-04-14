@@ -34,7 +34,6 @@ body {
 
 .animate {
   animation-name: moveLeftToRight;
-  animation-duration: 3s;
   animation-iteration-count: 1;
-  animation-timing-function: reverse;
+  animation-timing-function: linear;
 }

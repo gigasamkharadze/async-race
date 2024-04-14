@@ -1,5 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useGarage } from '../context/CarContext.tsx';
+
+import CarIcon from './CarIcon.tsx';
 
 interface CarProps {
   name: string;
@@ -14,10 +16,11 @@ function Car({
   const { refetchGarage } = useGarage();
   const [status, setStatus] = useState('stopped');
   const [isAnimating, setIsAnimating] = useState(false);
-  const carRef = useRef<HTMLImageElement>(null);
 
   function startAnimation(velocity: number, distance: number) {
-    carRef.current?.style.setProperty('--animation-duration', `${distance / velocity}s`);
+    const car = document.getElementById(`car${id}`);
+    if (!car) return;
+    car.style.setProperty('animation-duration', `${distance / (1000 * velocity)}s`);
     setIsAnimating(true);
   }
 
@@ -89,16 +92,21 @@ function Car({
           B
         </button>
       </div>
-      <img
-        src="racing-car.svg"
-        alt="racing car"
-        className={`car ${isAnimating ? 'animate' : ''}`}
-        ref={carRef}
+      <div
+        id={`car${id}`}
         onAnimationEnd={() => {
           stopAnimation();
           setStatus('finished');
         }}
-      />
+        className={`car ${isAnimating ? 'animate' : ''}`}
+      >
+        <CarIcon
+          name="racing-car"
+          width={100}
+          height={100}
+          fill={color}
+        />
+      </div>
       <p className="ml-48 text-white">{name}</p>
     </div>
   );
