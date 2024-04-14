@@ -1,24 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Car from './Car.tsx';
+import Control from './Control.tsx';
 
-interface ICar {
-  name: string;
-  color: string;
-  id: number;
-}
+import { useGarage } from '../context/CarContext.tsx';
 
-interface Props {
-  garage: ICar[],
-  goToNextPage: () => void,
-  goToPrevPage: () => void,
-  setSelectedCar: React.Dispatch<React.SetStateAction<number>>;
-}
+function Garage() {
+  const { garage, goToNextPage, goToPrevPage } = useGarage();
+  const [selectedCar, setSelectedCar] = useState<number>(0);
 
-function Garage({
-  garage, goToNextPage, goToPrevPage, setSelectedCar,
-}: Props) {
   return (
     <div className="garage">
+      <Control selectedCar={selectedCar} />
       {garage.map((car) => (
         <Car
           key={car.id}

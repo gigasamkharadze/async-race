@@ -76,6 +76,7 @@ function Car({
       </div>
       <div className="flex flex-col text-white gap-1">
         <button
+          id={`start${id}`}
           onClick={handleStart}
           type="button"
           className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
@@ -84,6 +85,7 @@ function Car({
           A
         </button>
         <button
+          id={`reset${id}`}
           onClick={handleStop}
           type="button"
           className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
