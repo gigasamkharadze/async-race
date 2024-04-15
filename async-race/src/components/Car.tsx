@@ -5,17 +5,21 @@ import CarIcon from './CarIcon.tsx';
 
 interface CarProps {
   name: string;
+  winner: number;
+  setWinner: React.Dispatch<React.SetStateAction<number>>;
   color: string;
   id: number;
   setSelectedCar: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function Car({
-  name, color, id, setSelectedCar,
+  name, winner, setWinner, color, id, setSelectedCar,
 }: CarProps) {
   const { refetchGarage } = useGarage();
   const [status, setStatus] = useState('stopped');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [velocity, setVelocity] = useState(0);
+  const [distance, setDistance] = useState(0);
 
   function startAnimation(velocity: number, distance: number) {
     const car = document.getElementById(`car${id}`);
@@ -25,11 +29,13 @@ function Car({
   }
 
   function stopAnimation() {
+    setStatus('stopped');
     setIsAnimating(false);
   }
 
   function handleStop() {
     setStatus('stopped');
+    setIsAnimating(false);
     stopAnimation();
   }
 
@@ -41,6 +47,8 @@ function Car({
       .then((data) => {
         setStatus('started');
         startAnimation(data.velocity, data.distance);
+        setDistance(data.distance);
+        setVelocity(data.velocity);
         fetch(`http://127.0.0.1:3000/engine?id=${id}&status=started`, {
           method: 'PATCH',
         }).then((response) => {
@@ -50,6 +58,50 @@ function Car({
           }
         });
       });
+  }
+
+  function createWinner(carId: number) {
+    fetch(`http://127.0.0.1:3000/winners?id=${carId}`, {
+      method: 'GET',
+    }).then((response) => response.json())
+      .then((data) => {
+        const time = distance / (1000 * velocity);
+        if (Object.keys(data).length === 0) {
+          const wins = 1;
+          fetch('http://127.0.0.1:3000/winners', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: carId,
+              wins,
+              time,
+            }),
+          });
+        } else {
+          const wins = data[0].wins + 1;
+          fetch(`http://127.0.0.1:3000/winners/${carId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              wins,
+              time,
+            }),
+          });
+        }
+      });
+  }
+
+  function handleFinish() {
+    stopAnimation();
+    if (winner === 0) {
+      setWinner(id);
+      createWinner(id);
+    } else handleStop();
+    setStatus('finished');
   }
 
   return (
@@ -97,8 +149,7 @@ function Car({
       <div
         id={`car${id}`}
         onAnimationEnd={() => {
-          stopAnimation();
-          setStatus('finished');
+          handleFinish();
         }}
         className={`car ${isAnimating ? 'animate' : ''}`}
       >

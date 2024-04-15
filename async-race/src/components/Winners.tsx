@@ -41,6 +41,27 @@ function Winners() {
           <div className="p-4 text-white border-y">Name</div>
         </div>
       ))}
+      <div className="w-full flex gap-2 mt-2">
+        <button
+          onClick={() => {
+            setWinnersPage((prevPage) => Math.max(prevPage - 1, 1));
+          }}
+          className="bg-white rounded-sm p-2 hover:bg-gray-100"
+          type="button"
+        >
+          Prev Page
+        </button>
+        <button
+          onClick={() => {
+            if (winners.length < limit) return;
+            setWinnersPage((prevPage) => prevPage + 1);
+          }}
+          className="bg-white rounded-sm p-2 hover:bg-gray-100"
+          type="button"
+        >
+          Next Page
+        </button>
+      </div>
     </div>
   );
 }

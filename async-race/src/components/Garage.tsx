@@ -7,14 +7,17 @@ import { useGarage } from '../context/CarContext.tsx';
 function Garage() {
   const { garage, goToNextPage, goToPrevPage } = useGarage();
   const [selectedCar, setSelectedCar] = useState<number>(0);
+  const [winner, setWinner] = useState<number>(0);
 
   return (
     <div className="garage">
-      <Control selectedCar={selectedCar} />
+      <Control setWinner={setWinner} selectedCar={selectedCar} />
       {garage.map((car) => (
         <Car
           key={car.id}
           name={car.name}
+          winner={winner}
+          setWinner={setWinner}
           color={car.color}
           setSelectedCar={setSelectedCar}
           id={car.id}

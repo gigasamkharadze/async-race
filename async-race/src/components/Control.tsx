@@ -26,9 +26,10 @@ const carBrands = [
 
 type ControlProps = {
   selectedCar: number;
+  setWinner: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function Control({ selectedCar } : ControlProps) {
+function Control({ selectedCar, setWinner } : ControlProps) {
   const [carBrandNew, setCarBrandNew] = useState('');
   const [carColorNew, setCarColorNew] = useState('#000000');
   const [carBrandUpdate, setCarBrandUpdate] = useState('');
@@ -66,6 +67,7 @@ function Control({ selectedCar } : ControlProps) {
   }
 
   function startRace() {
+    setWinner(0);
     const ids = garage.map((car) => car.id);
     ids.forEach((id) => {
       const button = document.getElementById(`start${id}`);
