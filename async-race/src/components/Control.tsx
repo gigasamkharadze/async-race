@@ -1,35 +1,15 @@
 import React, { useState } from 'react';
+
+// import hooks
 import { useGarage } from '../context/CarContext.tsx';
 
-const carBrands = [
-  'Audi',
-  'BMW',
-  'Chevrolet',
-  'Citroen',
-  'Ford',
-  'Honda',
-  'Hyundai',
-  'Kia',
-  'Mazda',
-  'Mercedes',
-  'Nissan',
-  'Opel',
-  'Peugeot',
-  'Renault',
-  'Skoda',
-  'Subaru',
-  'Suzuki',
-  'Toyota',
-  'Volkswagen',
-  'Volvo',
-];
+// import components
+import carBrands from '../constants/cars.ts';
 
-type ControlProps = {
-  selectedCar: number;
-  setWinner: React.Dispatch<React.SetStateAction<number>>;
-};
+// import interfaces
+import GarageProps from '../interfaces/control/garageControl.ts';
 
-function Control({ selectedCar, setWinner } : ControlProps) {
+function Control({ selectedCar, setWinner } : GarageProps) {
   const [carBrandNew, setCarBrandNew] = useState('');
   const [carColorNew, setCarColorNew] = useState('#000000');
   const [carBrandUpdate, setCarBrandUpdate] = useState('');
@@ -81,6 +61,23 @@ function Control({ selectedCar, setWinner } : ControlProps) {
       const button = document.getElementById(`reset${id}`);
       if (button) button.click();
     });
+  }
+
+  function generateCars() {
+    for (let i = 0; i < 5; i += 1) {
+      const randomCarBrand = carBrands[Math.floor(Math.random() * carBrands.length)];
+      const randomCarColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+      fetch('http://127.0.0.1:3000/garage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: randomCarBrand,
+          color: randomCarColor,
+        }),
+      }).then(() => refetchGarage());
+    }
   }
 
   return (
@@ -148,22 +145,7 @@ function Control({ selectedCar, setWinner } : ControlProps) {
       </div>
       <div>
         <button
-          onClick={() => {
-            for (let i = 0; i < 5; i += 1) {
-              const randomCarBrand = carBrands[Math.floor(Math.random() * carBrands.length)];
-              const randomCarColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-              fetch('http://127.0.0.1:3000/garage', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  name: randomCarBrand,
-                  color: randomCarColor,
-                }),
-              }).then(() => refetchGarage());
-            }
-          }}
+          onClick={generateCars}
           type="button"
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
         >

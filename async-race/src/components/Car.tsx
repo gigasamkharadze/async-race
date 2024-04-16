@@ -1,42 +1,27 @@
 import React, { useState } from 'react';
+
+// import hooks
 import { useGarage } from '../context/CarContext.tsx';
 
-import CarIcon from './CarIcon.tsx';
+// import icons
+import CarIcon from '../Icons/CarIcon.tsx';
 
-interface CarProps {
-  name: string;
-  winner: number;
-  setWinner: React.Dispatch<React.SetStateAction<number>>;
-  color: string;
-  id: number;
-  setSelectedCar: React.Dispatch<React.SetStateAction<number>>;
-}
+// import interfaces
+import GarageCar from '../interfaces/cars/garageCar.ts';
 
 function Car({
   name, winner, setWinner, color, id, setSelectedCar,
-}: CarProps) {
+}: GarageCar) {
   const { refetchGarage } = useGarage();
-  const [status, setStatus] = useState('stopped');
   const [isAnimating, setIsAnimating] = useState(false);
   const [velocity, setVelocity] = useState(0);
   const [distance, setDistance] = useState(0);
 
-  function startAnimation() {
+  function startAnimation(travelDistance: number, carVelocity: number) {
     const car = document.getElementById(`car${id}`);
     if (!car) return;
-    car.style.setProperty('animation-duration', `${distance / (1000 * velocity)}s`);
+    car.style.setProperty('animation-duration', `${travelDistance / (1000 * carVelocity)}s`);
     setIsAnimating(true);
-  }
-
-  function stopAnimation() {
-    setStatus('stopped');
-    setIsAnimating(false);
-  }
-
-  function handleStop() {
-    setStatus('stopped');
-    setIsAnimating(false);
-    stopAnimation();
   }
 
   function handleStart() {
@@ -45,16 +30,14 @@ function Car({
     })
       .then((response) => response.json())
       .then((data) => {
-        setStatus('started');
-        startAnimation();
         setDistance(data.distance);
         setVelocity(data.velocity);
+        startAnimation(data.distance, data.velocity);
         fetch(`http://127.0.0.1:3000/engine?id=${id}&status=started`, {
           method: 'PATCH',
         }).then((response) => {
           if (response.status !== 200) {
-            setStatus('stopped');
-            handleStop();
+            setIsAnimating(false);
           }
         });
       });
@@ -97,12 +80,17 @@ function Car({
   }
 
   function handleFinish() {
-    stopAnimation();
+    setIsAnimating(false);
     if (winner === 0) {
       setWinner(id);
       createWinner(id);
-    } else handleStop();
-    setStatus('finished');
+    }
+  }
+
+  function removeCar() {
+    fetch(`http://127.0.0.1:3000/garage/${id}`, {
+      method: 'DELETE',
+    }).then(() => refetchGarage());
   }
 
   return (
@@ -111,18 +99,14 @@ function Car({
         <button
           onClick={() => setSelectedCar(id)}
           type="button"
-          className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
+          className="bg-white rounded-sm p-1 hover:bg-gray-300 text-black"
         >
           select
         </button>
         <button
-          onClick={() => {
-            fetch(`http://127.0.0.1:3000/garage/${id}`, {
-              method: 'DELETE',
-            }).then(() => refetchGarage());
-          }}
+          onClick={removeCar}
           type="button"
-          className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
+          className="bg-white rounded-sm p-1 hover:bg-gray-300 text-black"
         >
           remove
         </button>
@@ -132,16 +116,16 @@ function Car({
           id={`start${id}`}
           onClick={handleStart}
           type="button"
-          className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
+          className="bg-white rounded-sm p-1 hover:bg-gray-300 text-black"
           disabled={isAnimating}
         >
           A
         </button>
         <button
           id={`reset${id}`}
-          onClick={handleStop}
+          onClick={() => setIsAnimating(false)}
           type="button"
-          className="bg-white rounded-sm p-1 hover:bg-gray-100 text-black"
+          className="bg-white rounded-sm p-1 hover:bg-gray-300 text-black"
           disabled={!isAnimating}
         >
           B

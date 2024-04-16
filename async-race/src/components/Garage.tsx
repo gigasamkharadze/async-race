@@ -10,8 +10,13 @@ function Garage() {
   const [winner, setWinner] = useState<number>(0);
 
   return (
-    <div className="garage">
+    <div className="garage relative border-r">
       <Control setWinner={setWinner} selectedCar={selectedCar} />
+
+      <div className="text-white absolute right-0 top-1/2 rotate-90 text-3xl tracking-widest">
+        finish
+      </div>
+
       {garage.map((car) => (
         <Car
           key={car.id}
@@ -25,19 +30,15 @@ function Garage() {
       ))}
       <div className="w-full flex gap-2">
         <button
-          onClick={() => {
-            goToPrevPage();
-          }}
-          className="bg-white rounded-sm p-2 hover:bg-gray-100"
+          onClick={() => goToPrevPage()}
+          className="bg-white rounded-sm p-2 hover:bg-gray-300"
           type="button"
         >
           Prev Page
         </button>
         <button
-          onClick={() => {
-            goToNextPage();
-          }}
-          className="bg-white rounded-sm p-2 hover:bg-gray-100"
+          onClick={() => goToNextPage()}
+          className="bg-white rounded-sm p-2 hover:bg-gray-300"
           type="button"
         >
           Next Page
