@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 // import hooks
 import { useGarage } from '../context/CarContext.tsx';
 
-// import components
-import carBrands from '../constants/cars.ts';
-
 // import interfaces
 import GarageProps from '../interfaces/control/garageControl.ts';
+import createCar from '../api/createCar.ts';
+import updateCar from '../api/updateCar.ts';
+import generateRandomCars from '../api/generateRandomCars.ts';
 
 function Control({ selectedCar, setWinner } : GarageProps) {
   const [carBrandNew, setCarBrandNew] = useState('');
@@ -15,36 +15,6 @@ function Control({ selectedCar, setWinner } : GarageProps) {
   const [carBrandUpdate, setCarBrandUpdate] = useState('');
   const [carColorUpdate, setCarColorUpdate] = useState('#000000');
   const { refetchGarage, garage } = useGarage();
-
-  function updateCar() {
-    if (selectedCar === 0) return;
-    if (!garage.some((car) => car.id === selectedCar)) return;
-    fetch(`http://127.0.0.1:3000/garage/${selectedCar}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: carBrandUpdate,
-        color: carColorUpdate,
-      }),
-    })
-      .then(() => refetchGarage());
-  }
-
-  function createCar() {
-    fetch('http://127.0.0.1:3000/garage', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: carBrandNew,
-        color: carColorNew,
-      }),
-    })
-      .then(() => refetchGarage());
-  }
 
   function startRace() {
     setWinner(0);
@@ -61,23 +31,6 @@ function Control({ selectedCar, setWinner } : GarageProps) {
       const button = document.getElementById(`reset${id}`);
       if (button) button.click();
     });
-  }
-
-  function generateCars() {
-    for (let i = 0; i < 5; i += 1) {
-      const randomCarBrand = carBrands[Math.floor(Math.random() * carBrands.length)];
-      const randomCarColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-      fetch('http://127.0.0.1:3000/garage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: randomCarBrand,
-          color: randomCarColor,
-        }),
-      }).then(() => refetchGarage());
-    }
   }
 
   return (
@@ -115,7 +68,7 @@ function Control({ selectedCar, setWinner } : GarageProps) {
           type="color"
         />
         <button
-          onClick={createCar}
+          onClick={() => createCar(carBrandNew, carColorNew, refetchGarage)}
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
           type="button"
         >
@@ -136,7 +89,15 @@ function Control({ selectedCar, setWinner } : GarageProps) {
           type="color"
         />
         <button
-          onClick={updateCar}
+          onClick={() => {
+            updateCar(
+              selectedCar,
+              carBrandUpdate,
+              carColorUpdate,
+              garage,
+              refetchGarage,
+            );
+          }}
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
           type="button"
         >
@@ -145,7 +106,7 @@ function Control({ selectedCar, setWinner } : GarageProps) {
       </div>
       <div>
         <button
-          onClick={generateCars}
+          onClick={() => generateRandomCars(refetchGarage)}
           type="button"
           className="bg-white rounded-sm p-2 hover:bg-gray-100"
         >

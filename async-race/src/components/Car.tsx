@@ -9,6 +9,11 @@ import CarIcon from '../Icons/CarIcon.tsx';
 // import interfaces
 import GarageCar from '../interfaces/cars/garageCar.ts';
 
+// import utils
+import removeCar from '../api/removeCar.ts';
+import createOrUpdateWinner from '../api/createOrUpdateWinner.ts';
+import tryDrive from '../api/tryDrive.ts';
+
 function Car({
   name, winner, setWinner, color, id, setSelectedCar,
 }: GarageCar) {
@@ -20,77 +25,17 @@ function Car({
   function startAnimation(travelDistance: number, carVelocity: number) {
     const car = document.getElementById(`car${id}`);
     if (!car) return;
-    car.style.setProperty('animation-duration', `${travelDistance / (1000 * carVelocity)}s`);
+    const animationDuration = travelDistance / (1000 * carVelocity);
+    car.style.setProperty('animation-duration', `${animationDuration}s`);
     setIsAnimating(true);
-  }
-
-  function handleStart() {
-    fetch(`http://127.0.0.1:3000/engine?id=${id}&status=started`, {
-      method: 'PATCH',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setDistance(data.distance);
-        setVelocity(data.velocity);
-        startAnimation(data.distance, data.velocity);
-        fetch(`http://127.0.0.1:3000/engine?id=${id}&status=started`, {
-          method: 'PATCH',
-        }).then((response) => {
-          if (response.status !== 200) {
-            setIsAnimating(false);
-          }
-        });
-      });
-  }
-
-  function createWinner(carId: number) {
-    fetch(`http://127.0.0.1:3000/winners?id=${carId}`, {
-      method: 'GET',
-    }).then((response) => response.json())
-      .then((data) => {
-        const time = distance / (1000 * velocity);
-        if (Object.keys(data).length === 0) {
-          const wins = 1;
-          fetch('http://127.0.0.1:3000/winners', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: carId,
-              wins,
-              time,
-            }),
-          });
-        } else {
-          const wins = data[0].wins + 1;
-          const minTime = Math.min(data[0].time, distance / (1000 * velocity));
-          fetch(`http://127.0.0.1:3000/winners/${carId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              wins,
-              time: minTime,
-            }),
-          });
-        }
-      });
   }
 
   function handleFinish() {
     setIsAnimating(false);
     if (winner === 0) {
       setWinner(id);
-      createWinner(id);
+      createOrUpdateWinner(id, distance, velocity);
     }
-  }
-
-  function removeCar() {
-    fetch(`http://127.0.0.1:3000/garage/${id}`, {
-      method: 'DELETE',
-    }).then(() => refetchGarage());
   }
 
   return (
@@ -104,7 +49,7 @@ function Car({
           select
         </button>
         <button
-          onClick={removeCar}
+          onClick={() => removeCar(id, refetchGarage)}
           type="button"
           className="bg-white rounded-sm p-1 hover:bg-gray-300 text-black"
         >
@@ -114,7 +59,7 @@ function Car({
       <div className="flex flex-col text-white gap-1">
         <button
           id={`start${id}`}
-          onClick={handleStart}
+          onClick={() => tryDrive(id, setDistance, setVelocity, startAnimation, setIsAnimating)}
           type="button"
           className="bg-white rounded-sm p-1 hover:bg-gray-300 text-black"
           disabled={isAnimating}

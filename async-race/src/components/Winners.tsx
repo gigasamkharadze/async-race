@@ -1,38 +1,28 @@
 import React, { useState, useEffect } from 'react';
 
 // import components
-import Car from '../interfaces/cars/car.ts';
 import Winner from '../interfaces/cars/winner.ts';
 
 // import constants
 import limit from '../constants/page.ts';
+
+// import utils
+import getWinners from '../api/getWinners.ts';
 
 function Winners() {
   const [winners, setWinners] = useState<Winner[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const fetchWinners = async () => {
-      const response = await fetch(`http://127.0.0.1:3000/winners?_page=${currentPage}&_limit=${limit}`);
-      const winnersData = await response.json();
-      const winnersWithCars = await Promise.all(
-        winnersData.map(async (winner: Winner) => {
-          const carResponse = await fetch(`http://127.0.0.1:3000/garage/${winner.id}`);
-          const carData: Car = await carResponse.json();
-          return { ...winner, car: carData };
-        }),
-      );
-      setWinners(winnersWithCars);
-    };
-    fetchWinners();
+    getWinners(currentPage).then((data) => {
+      setWinners(data);
+    });
   }, [currentPage]);
 
-  // go to the previous page
   function handlePrevPage() {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   }
 
-  // go to the next page
   function handleNextPage() {
     if (winners.length < limit) return;
     setCurrentPage((prevPage) => prevPage + 1);
