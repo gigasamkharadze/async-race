@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
+interface Car {
+  color: string;
+  name: string;
+}
+
 interface Winner {
   id: number;
   wins: number;
   time: number;
+  car: Car;
 }
 
 function Winners() {
@@ -11,16 +17,22 @@ function Winners() {
   const [winnersPage, setWinnersPage] = useState(1);
   const limit = 7;
 
-  useEffect(
-    () => {
-      fetch(`http://127.0.0.1:3000/winners?_page=${winnersPage}&_limit=${limit}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setWinners(data);
-        });
-    },
-    [winnersPage],
-  );
+  useEffect(() => {
+    const fetchWinners = async () => {
+      const response = await fetch(`http://127.0.0.1:3000/winners?_page=${winnersPage}&_limit=${limit}`);
+      const winnersData = await response.json();
+      const winnersWithCars = await Promise.all(
+        winnersData.map(async (winner: Winner) => {
+          const carResponse = await fetch(`http://127.0.0.1:3000/garage/${winner.id}`);
+          const carData: Car = await carResponse.json();
+          return { ...winner, car: carData };
+        }),
+      );
+      setWinners(winnersWithCars);
+    };
+
+    fetchWinners();
+  }, [winnersPage]);
 
   return (
     <div>
@@ -37,8 +49,8 @@ function Winners() {
           <div className="p-4 text-white border-y">{winner.id}</div>
           <div className="p-4 text-white border-y">{winner.wins}</div>
           <div className="p-4 text-white border-y">{winner.time}</div>
-          <div className="p-4 text-white border-y">Color</div>
-          <div className="p-4 text-white border-y">Name</div>
+          <div className="p-4 text-white border-y">{winner.car.color}</div>
+          <div className="p-4 text-white border-y">{winner.car.name}</div>
         </div>
       ))}
       <div className="w-full flex gap-2 mt-2">

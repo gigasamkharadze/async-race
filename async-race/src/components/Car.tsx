@@ -21,7 +21,7 @@ function Car({
   const [velocity, setVelocity] = useState(0);
   const [distance, setDistance] = useState(0);
 
-  function startAnimation(velocity: number, distance: number) {
+  function startAnimation() {
     const car = document.getElementById(`car${id}`);
     if (!car) return;
     car.style.setProperty('animation-duration', `${distance / (1000 * velocity)}s`);
@@ -46,7 +46,7 @@ function Car({
       .then((response) => response.json())
       .then((data) => {
         setStatus('started');
-        startAnimation(data.velocity, data.distance);
+        startAnimation();
         setDistance(data.distance);
         setVelocity(data.velocity);
         fetch(`http://127.0.0.1:3000/engine?id=${id}&status=started`, {
@@ -81,6 +81,7 @@ function Car({
           });
         } else {
           const wins = data[0].wins + 1;
+          const minTime = Math.min(data[0].time, distance / (1000 * velocity));
           fetch(`http://127.0.0.1:3000/winners/${carId}`, {
             method: 'PUT',
             headers: {
@@ -88,7 +89,7 @@ function Car({
             },
             body: JSON.stringify({
               wins,
-              time,
+              time: minTime,
             }),
           });
         }
