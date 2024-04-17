@@ -30,11 +30,24 @@ function Car({
     setIsAnimating(true);
   }
 
+  function showResult() {
+    const result = document.querySelector('.race-result');
+    if (!result) return;
+    result.classList.remove('hidden');
+    setTimeout(
+      () => {
+        result.classList.add('hidden');
+      },
+      3000,
+    );
+  }
+
   function handleFinish() {
     setIsAnimating(false);
     if (winner === 0) {
       setWinner(id);
       createOrUpdateWinner(id, distance, velocity);
+      showResult();
     }
   }
 
