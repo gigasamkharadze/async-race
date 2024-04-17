@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // import hooks
 import { useGarage } from '../context/CarContext.tsx';
+import useLocalStorage from '../hooks/useLocalStorage.ts';
 
 // import interfaces
 import GarageProps from '../interfaces/control/garageControl.ts';
@@ -10,10 +11,10 @@ import updateCar from '../api/updateCar.ts';
 import generateRandomCars from '../api/generateRandomCars.ts';
 
 function Control({ selectedCar, setWinner } : GarageProps) {
-  const [carBrandNew, setCarBrandNew] = useState('');
-  const [carColorNew, setCarColorNew] = useState('#000000');
-  const [carBrandUpdate, setCarBrandUpdate] = useState('');
-  const [carColorUpdate, setCarColorUpdate] = useState('#000000');
+  const [carBrandNew, setCarBrandNew] = useLocalStorage('carBrandNew', '');
+  const [carColorNew, setCarColorNew] = useLocalStorage('carColorNew', '#000000');
+  const [carBrandUpdate, setCarBrandUpdate] = useLocalStorage('carBrandUpdate', '');
+  const [carColorUpdate, setCarColorUpdate] = useLocalStorage('carColorUpdate', '#000000');
   const { refetchGarage, garage } = useGarage();
 
   function startRace() {

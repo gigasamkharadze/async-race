@@ -2,17 +2,14 @@ import React, {
   createContext, useState, useEffect, useContext, ReactNode, useMemo,
   useCallback,
 } from 'react';
-
-interface Car {
-  id: number;
-  name: string;
-  color: string;
-}
+import useLocalStorage from '../hooks/useLocalStorage.ts';
+import CarWithId from '../interfaces/cars/carWithId.ts';
 
 interface GarageContextType {
-  garage: Car[];
-  setGarage: React.Dispatch<React.SetStateAction<Car[]>>,
+  garage: CarWithId[];
+  setGarage: React.Dispatch<React.SetStateAction<CarWithId[]>>,
   refetchGarage: () => void;
+  garagePage: number;
   goToNextPage: () => void;
   goToPrevPage: () => void;
 }
@@ -32,8 +29,8 @@ interface GarageProviderProps {
 }
 
 export function GarageProvider({ children }: GarageProviderProps) {
-  const [garage, setGarage] = useState<Car[]>([]);
-  const [garagePage, setGaragePage] = useState(1);
+  const [garage, setGarage] = useState<CarWithId[]>([]);
+  const [garagePage, setGaragePage] = useLocalStorage('garagePage', 1);
   const limit = 7;
 
   const refetchGarage = useCallback(() => {
@@ -51,13 +48,14 @@ export function GarageProvider({ children }: GarageProviderProps) {
   const fireBaseProviderValue = useMemo(() => ({
     garage,
     setGarage,
+    garagePage,
     refetchGarage,
     goToNextPage: () => {
       if (garage.length < limit) return;
-      setGaragePage((prevPage) => prevPage + 1);
+      setGaragePage(garagePage + 1);
     },
-    goToPrevPage: () => setGaragePage((prevPage) => Math.max(prevPage - 1, 1)),
-  }), [garage, refetchGarage]);
+    goToPrevPage: () => setGaragePage(Math.max(garagePage - 1, 1)),
+  }), [garage, refetchGarage, garagePage, setGaragePage]);
 
   return (
     <GarageContext.Provider value={fireBaseProviderValue}>
