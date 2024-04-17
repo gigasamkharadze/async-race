@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Car from './Car.tsx';
 import Control from './Control.tsx';
 
 import { useGarage } from '../context/CarContext.tsx';
 
+import getTotalCars from '../api/getTotalCars.ts';
+
 function Garage() {
   const { garage, goToNextPage, goToPrevPage } = useGarage();
   const [selectedCar, setSelectedCar] = useState<number>(0);
   const [winner, setWinner] = useState<number>(0);
+  const [totalCars, setTotalCars] = useState<number>(0);
+
+  async function updateTotalCars() {
+    const total = await getTotalCars();
+    setTotalCars(total);
+  }
+
+  useEffect(
+    () => {
+      updateTotalCars();
+    },
+    [garage],
+  );
 
   return (
     <div className="garage relative border-r">
@@ -54,6 +69,10 @@ function Garage() {
           Next Page
         </button>
       </div>
+      <p className="text-white text-xl mt-2">
+        Total cars:
+        {totalCars}
+      </p>
     </div>
   );
 }

@@ -34,7 +34,7 @@ function Control({ selectedCar, setWinner } : GarageProps) {
   }
 
   return (
-    <div className="flex justify-between items-center gap-4">
+    <div className="flex flex-wrap justify-between items-center gap-4">
       <div className="flex gap-2">
         <button
           onClick={startRace}

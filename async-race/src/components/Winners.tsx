@@ -8,14 +8,22 @@ import limit from '../constants/page.ts';
 
 // import utils
 import getWinners from '../api/getWinners.ts';
+import getTotalWinners from '../api/getTotalWinners.ts';
 
 function Winners() {
   const [winners, setWinners] = useState<Winner[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalWinners, setTotalWinners] = useState(0);
+
+  async function updateTotalWinners() {
+    const total = await getTotalWinners();
+    setTotalWinners(total);
+  }
 
   useEffect(() => {
     getWinners(currentPage).then((data) => {
       setWinners(data);
+      updateTotalWinners();
     });
   }, [currentPage]);
 
@@ -62,6 +70,10 @@ function Winners() {
         >
           Next Page
         </button>
+      </div>
+      <div className="text-white text-xl mt-2">
+        Total winners:
+        {totalWinners}
       </div>
     </div>
   );
